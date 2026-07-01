@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Phone, Mail, Lock, User, ShieldCheck, Sparkles, Calendar, Palette, Wallet, KeyRound } from 'lucide-react'
+import { Phone, Mail, Lock, User, ShieldCheck, Calendar, Palette, Wallet, KeyRound } from 'lucide-react'
 import { toast } from '@/components/ui/custom-toast'
 import { motion } from 'framer-motion'
 import { useAuthStore } from '@/components/auth-provider'
@@ -61,14 +61,12 @@ export function AuthScreen() {
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-background relative overflow-hidden">
-      {/* Toggle de tema */}
       <div className="absolute top-4 right-4 z-30">
         <ThemeToggle />
       </div>
 
-      {/* === LADO ESQUERDO: HERO (desktop only) === */}
+      {/* LADO ESQUERDO: HERO (desktop only) */}
       <div className="hidden md:flex md:w-1/2 relative items-center justify-center p-12 overflow-hidden">
-        {/* Background: blobs dinâmicos que flutuam — mais vibrantes no modo claro */}
         <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute -top-20 -right-20 h-96 w-96 rounded-full bg-primary/35 dark:bg-primary/20 blur-3xl blob-1" />
           <div className="absolute bottom-0 -left-20 h-80 w-80 rounded-full bg-[#F2B6C6]/50 dark:bg-[#F2B6C6]/30 blur-3xl blob-2" />
@@ -82,7 +80,6 @@ export function AuthScreen() {
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           className="relative z-10 text-center max-w-sm"
         >
-          {/* Logo grande em card glass */}
           <div className="relative inline-block mb-8">
             <div className="absolute inset-0 -m-8 rounded-[3rem] bg-gradient-to-br from-primary/30 via-[#F2B6C6]/35 to-primary/15 blur-3xl blob-1" />
             <div className="relative rounded-[2rem] px-14 py-10 backdrop-blur-2xl backdrop-saturate-150 bg-white/60 dark:bg-white/10 border border-white/50 dark:border-white/15 shadow-2xl shadow-primary/10">
@@ -97,7 +94,6 @@ export function AuthScreen() {
             Agende online, experimente cores no provador virtual e acompanhe seu histórico — tudo em um só lugar.
           </p>
 
-          {/* Features */}
           <div className="grid grid-cols-3 gap-3">
             {[
               { icon: Calendar, label: 'Agende\nonline' },
@@ -119,9 +115,8 @@ export function AuthScreen() {
         </motion.div>
       </div>
 
-      {/* === LADO DIREITO: FORM (desktop) / CENTRAL (mobile) === */}
+      {/* LADO DIREITO: FORM (desktop) / CENTRAL (mobile) */}
       <div className="flex-1 md:w-1/2 flex items-center justify-center p-6 relative z-10">
-        {/* blobs dinâmicos no mobile — mais vibrantes no modo claro */}
         <div aria-hidden className="pointer-events-none absolute inset-0 md:hidden overflow-hidden">
           <div className="absolute -top-24 -right-20 h-72 w-72 rounded-full bg-primary/25 dark:bg-primary/15 blur-3xl blob-1" />
           <div className="absolute top-1/3 -left-24 h-64 w-64 rounded-full bg-[#F2B6C6]/40 dark:bg-[#F2B6C6]/25 blur-3xl blob-2" />
@@ -134,7 +129,7 @@ export function AuthScreen() {
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           className="w-full max-w-sm relative z-10"
         >
-          {/* Logo grande no mobile */}
+          {/* Logo no mobile */}
           <div className="text-center mb-6 md:hidden">
             <div className="relative inline-block mb-3">
               <div className="absolute inset-0 -m-6 rounded-[2.5rem] bg-gradient-to-br from-primary/30 via-[#F2B6C6]/35 to-primary/15 blur-2xl blob-1" />
@@ -231,7 +226,8 @@ export function AuthScreen() {
             <span className="h-3 w-px bg-border" />
             <span className="flex items-center gap-1.5"><Wallet className="h-3.5 w-3.5 text-primary" /> Histórico</span>
           </div>
-
+        </motion.div>
+      </div>
 
       {/* Rodapé */}
       <footer className="absolute bottom-0 left-0 right-0 z-10 px-6 pb-4 text-center">

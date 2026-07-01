@@ -17,7 +17,6 @@ export async function POST(req: NextRequest) {
 
     const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg'
     const blob = await put(`uploads/${crypto.randomUUID()}.${ext}`, file, {
-      access: 'public',
       token: process.env.BLOB_READ_WRITE_TOKEN,
     })
     return NextResponse.json({ url: blob.url })

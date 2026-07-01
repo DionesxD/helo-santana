@@ -154,7 +154,7 @@ export function AuthScreen() {
                       <Label htmlFor="id">E-mail ou telefone</Label>
                       <div className="relative">
                         <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input id="id" value={identifier} onChange={(e) => setIdentifier(e.target.value)} placeholder="ana@exemplo.com" className="pl-9" autoComplete="username" />
+                        <Input id="id" value={identifier} onChange={(e) => setIdentifier(e.target.value)} placeholder="seunome@exemplo.com" className="pl-9" autoComplete="username" />
                       </div>
                     </div>
                     <div className="space-y-2">

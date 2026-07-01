@@ -232,16 +232,6 @@ export function AuthScreen() {
             <span className="flex items-center gap-1.5"><Wallet className="h-3.5 w-3.5 text-primary" /> Histórico</span>
           </div>
 
-          {/* Credenciais demo */}
-          <div className="mt-4 text-center text-[11px] text-muted-foreground/70">
-            <p className="flex items-center justify-center gap-1">
-              <Sparkles className="h-3 w-3 text-primary" />
-              Demo: <span className="text-foreground/80 font-medium">ana@exemplo.com</span> · <span className="text-foreground/80 font-medium">helo@naildesigner.app</span>
-            </p>
-            <p className="mt-0.5">senha: <span className="text-foreground/80 font-medium">123456</span></p>
-          </div>
-        </motion.div>
-      </div>
 
       {/* Rodapé */}
       <footer className="absolute bottom-0 left-0 right-0 z-10 px-6 pb-4 text-center">

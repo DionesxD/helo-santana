@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     })
     return NextResponse.json({ url: blob.url })
   } catch (e) {
-    console.error(e)
-    return NextResponse.json({ error: 'Erro interno' }, { status: 500 })
+    console.error('Upload error:', e)
+    return NextResponse.json({ error: 'Erro ao fazer upload da imagem' }, { status: 500 })
   }
 }

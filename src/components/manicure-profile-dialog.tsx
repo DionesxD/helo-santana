@@ -78,12 +78,17 @@ export function ManicureProfileDialog({
       if (!res.ok) throw new Error(d.error)
       return d
     },
-    onSuccess: () => {
-      toast.success('Senha alterada com sucesso!')
-      setSenhaAtual(''); setNovaSenha(''); setConfirmar('')
-      onOpenChange(false)
-    },
-    onError: (e: Error) => toast.error(e.message),
+onSuccess: async (data) => {
+  setUser(data.user)
+  try {
+    const res = await fetch('/api/auth/me', { credentials: 'include' })
+    const meData = await res.json()
+    if (meData.user) setUser(meData.user)
+  } catch { /* ignora */ }
+  qc.invalidateQueries()
+  toast.success('Perfil atualizado!')
+  onOpenChange(false)
+},
   })
 
   async function handleFoto(e: React.ChangeEvent<HTMLInputElement>) {

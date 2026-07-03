@@ -58,13 +58,17 @@ export function ClientProfileDialog({
       if (!res.ok) throw new Error(d.error)
       return d
     },
-    onSuccess: (data) => {
-      setUser(data.user)
-      qc.invalidateQueries()
-      toast.success('Perfil atualizado!')
-      onOpenChange(false)
-    },
-    onError: (e: Error) => toast.error(e.message),
+onSuccess: async (data) => {
+  setUser(data.user)
+  try {
+    const res = await fetch('/api/auth/me', { credentials: 'include' })
+    const meData = await res.json()
+    if (meData.user) setUser(meData.user)
+  } catch { /* ignora */ }
+  qc.invalidateQueries()
+  toast.success('Perfil atualizado!')
+  onOpenChange(false)
+},
   })
 
   const trocarSenha = useMutation({

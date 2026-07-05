@@ -1,7 +1,7 @@
 'use client'
 
 import { create } from 'zustand'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 
 export interface AuthUser {
@@ -25,7 +25,8 @@ interface AuthState {
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   loading: true,
-  setUser: (user) => set({ user }),
+  // Sempre cria um NOVO objeto para garantir re-render do React
+  setUser: (user) => set({ user: user ? { ...user } : null }),
   setLoading: (loading) => set({ loading }),
   logout: async () => {
     await fetch('/api/auth/logout', { method: 'POST' })
@@ -38,6 +39,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const setLoading = useAuthStore((s) => s.setLoading)
   const user = useAuthStore((s) => s.user)
   const qc = useQueryClient()
+  const prevUserId = useRef<string | null | undefined>(undefined)
 
   useEffect(() => {
     let mounted = true
@@ -58,10 +60,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [setUser, setLoading])
 
-  // Quando o usuário muda (login/logout/troca de conta), limpa TODO o cache
-  // do React Query para evitar que dados de uma sessão apareçam para outra.
+  // Limpa o cache APENAS quando o ID muda (login/logout/troca),
+  // não no primeiro carregamento (evita lentidão).
   useEffect(() => {
-    qc.clear()
+    const currentId = user?.id ?? null
+    if (prevUserId.current !== undefined && prevUserId.current !== currentId) {
+      qc.clear()
+    }
+    prevUserId.current = currentId
   }, [user?.id, qc])
 
   return <>{children}</>

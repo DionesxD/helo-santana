@@ -60,15 +60,10 @@ export function ClientProfileDialog({
       }
       return await res.json()
     },
-    onSuccess: (data) => {
-      // Usa APENAS data.user do PATCH (não faz fetch redundante de /api/auth/me)
-      if (data.user) {
-        setUser(data.user)
-        // Invalida queries para re-buscar dados que dependem do user
-        qc.invalidateQueries({ queryKey: ['notificacoes'] })
-      }
+    onSuccess: () => {
       toast.success('Perfil atualizado!')
-      onOpenChange(false)
+      // Reload garante que a foto aparece em todo lugar
+      setTimeout(() => window.location.reload(), 500)
     },
     onError: (e: Error) => toast.error(e.message),
   })

@@ -22,7 +22,8 @@ export function AppShell() {
     return <AuthScreen />
   }
 
-  // key força remount completo quando o usuário muda
+  // key força remount completo quando o usuário muda (login/troca de conta)
+  // Isso garante que TODAS as queries internas re-executam com o novo usuário
   const appKey = `${user.tipo}-${user.id}-${user._v}`
 
   return user.tipo === 'manicure' 

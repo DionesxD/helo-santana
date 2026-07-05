@@ -12,6 +12,7 @@ export interface AuthUser {
   tipo: 'cliente' | 'manicure'
   fotoUrl: string | null
   eClienteConfianca: boolean
+  // versão interna — incrementa a cada setUser para forçar re-render
   _v: number
 }
 
@@ -62,6 +63,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [setUser, setLoading])
 
+  // Limpa cache APENAS em troca real de usuário (login/logout)
   useEffect(() => {
     if (!hasInitialized.current) {
       hasInitialized.current = true

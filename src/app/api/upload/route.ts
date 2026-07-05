@@ -3,6 +3,7 @@ import { getCurrentUser } from '@/lib/auth'
 import { put } from '@vercel/blob'
 import crypto from 'crypto'
 
+// POST /api/upload — upload de imagem via Vercel Blob (persistente em produção)
 export async function POST(req: NextRequest) {
   const user = await getCurrentUser()
   if (!user || user.tipo !== 'manicure') {

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 
+// Serve manifest.webmanifest como rota da API (evita CORS/SSO da Vercel em team accounts)
 export async function GET() {
   const manifest = {
     name: 'Helo Santana — Nail Designer',

@@ -60,13 +60,9 @@ export function ManicureProfileDialog({
       }
       return await res.json()
     },
-    onSuccess: (data) => {
-      if (data.user) {
-        setUser(data.user)
-        qc.invalidateQueries({ queryKey: ['notificacoes'] })
-      }
+    onSuccess: () => {
       toast.success('Perfil atualizado!')
-      onOpenChange(false)
+      setTimeout(() => window.location.reload(), 500)
     },
     onError: (e: Error) => toast.error(e.message),
   })

@@ -12,20 +12,23 @@ export interface AuthUser {
   tipo: 'cliente' | 'manicure'
   fotoUrl: string | null
   eClienteConfianca: boolean
+  _v: number
 }
 
 interface AuthState {
   user: AuthUser | null
   loading: boolean
-  setUser: (user: AuthUser | null) => void
+  setUser: (user: Omit<AuthUser, '_v'> | null) => void
   setLoading: (loading: boolean) => void
   logout: () => Promise<void>
 }
 
+let userVersion = 0
+
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   loading: true,
-  setUser: (user) => set({ user: user ? { ...user } : null }),
+  setUser: (user) => set({ user: user ? { ...user, _v: ++userVersion } : null }),
   setLoading: (loading) => set({ loading }),
   logout: async () => {
     await fetch('/api/auth/logout', { method: 'POST' })
@@ -59,8 +62,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [setUser, setLoading])
 
-  // Limpa cache APENAS em troca real de usuário (login/logout),
-  // nunca no primeiro carregamento (evita lentidão).
   useEffect(() => {
     if (!hasInitialized.current) {
       hasInitialized.current = true

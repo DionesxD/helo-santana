@@ -10,6 +10,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { CalendarX, Clock, CalendarDays, Tag, MessageSquare } from 'lucide-react'
 import { toast } from '@/components/ui/custom-toast'
+import { useAuthStore } from '@/components/auth-provider'
 import { queryFn } from '@/lib/query-fn'
 import { formatDataCurta, formatDataHora, esmalteStyle } from '@/lib/format'
 import type { StatusAgendamento } from '@/lib/constants'
@@ -33,6 +34,7 @@ export function ClientAppointments({ onAgendar }: { onAgendar: () => void }) {
   const { data: agendamentos, isLoading } = useQuery({
     queryKey: ['agendamentos'],
     queryFn: () => queryFn<Agendamento[]>('/api/agendamentos', 'agendamentos'),
+    enabled: !!useAuthStore.getState().user,
   })
 
   const cancelar = useMutation({

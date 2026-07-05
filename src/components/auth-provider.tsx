@@ -25,7 +25,6 @@ interface AuthState {
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   loading: true,
-  // Sempre cria um NOVO objeto para garantir re-render do React
   setUser: (user) => set({ user: user ? { ...user } : null }),
   setLoading: (loading) => set({ loading }),
   logout: async () => {
@@ -39,7 +38,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const setLoading = useAuthStore((s) => s.setLoading)
   const user = useAuthStore((s) => s.user)
   const qc = useQueryClient()
-  const prevUserId = useRef<string | null | undefined>(undefined)
+  const hasInitialized = useRef(false)
 
   useEffect(() => {
     let mounted = true
@@ -60,14 +59,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [setUser, setLoading])
 
-  // Limpa o cache APENAS quando o ID muda (login/logout/troca),
-  // não no primeiro carregamento (evita lentidão).
+  // Limpa cache APENAS em troca real de usuário (login/logout),
+  // nunca no primeiro carregamento (evita lentidão).
   useEffect(() => {
-    const currentId = user?.id ?? null
-    if (prevUserId.current !== undefined && prevUserId.current !== currentId) {
-      qc.clear()
+    if (!hasInitialized.current) {
+      hasInitialized.current = true
+      return
     }
-    prevUserId.current = currentId
+    qc.clear()
   }, [user?.id, qc])
 
   return <>{children}</>

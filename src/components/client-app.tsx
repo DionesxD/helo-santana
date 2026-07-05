@@ -29,6 +29,7 @@ const TABS: { id: Tab; label: string; icon: typeof Home }[] = [
 
 export function ClientApp() {
   const user = useAuthStore((s) => s.user)
+  const fotoUrl = useAuthStore((s) => s.user?.fotoUrl)
   const [tab, setTab] = useState<Tab>('home')
   const [perfilOpen, setPerfilOpen] = useState(false)
   const naoLidas = useNotificacoesNaoLidas()
@@ -53,8 +54,8 @@ export function ClientApp() {
         <div className="flex items-center justify-between px-4 h-14">
           {/* Avatar clicável → abre perfil */}
           <button onClick={() => setPerfilOpen(true)} className="flex items-center gap-2.5 min-w-0 group">
-            {user.fotoUrl ? (
-              <img key={user.fotoUrl} src={user.fotoUrl} alt={user.nome} className={cn('h-9 w-9 rounded-full object-cover border border-border group-active:scale-95 transition-transform', naoLidas > 0 && 'pulse-ring')} />
+            {fotoUrl ? (
+              <img key={fotoUrl} src={fotoUrl} alt={user.nome} className={cn('h-9 w-9 rounded-full object-cover border border-border group-active:scale-95 transition-transform', naoLidas > 0 && 'pulse-ring')} />
             ) : (
               <AvatarBubble nome={user.nome} size="sm" className={cn('group-active:scale-95 transition-transform', naoLidas > 0 && 'pulse-ring')} />
             )}

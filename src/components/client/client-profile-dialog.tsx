@@ -30,7 +30,6 @@ export function ClientProfileDialog({
   const [email, setEmail] = useState(user?.email ?? '')
   const [fotoUrl, setFotoUrl] = useState(user?.fotoUrl ?? null)
 
-  // senha
   const [senhaAtual, setSenhaAtual] = useState('')
   const [novaSenha, setNovaSenha] = useState('')
   const [confirmar, setConfirmar] = useState('')
@@ -39,7 +38,7 @@ export function ClientProfileDialog({
     mutationFn: async (file: File) => {
       const fd = new FormData()
       fd.append('file', file)
-      const res = await fetch('/api/upload', { method: 'POST', body: fd })
+      const res = await fetch('/api/upload', { method: 'POST', body: fd, credentials: 'include' })
       const d = await res.json()
       if (!res.ok) throw new Error(d.error)
       return d.url as string
@@ -52,23 +51,26 @@ export function ClientProfileDialog({
       const res = await fetch('/api/auth/perfil', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ nome, telefone, email, fotoUrl }),
       })
-      const d = await res.json()
-      if (!res.ok) throw new Error(d.error)
-      return d
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}))
+        throw new Error(d.error || 'Erro ao salvar')
+      }
+      return await res.json()
     },
-onSuccess: async (data) => {
-  setUser(data.user)
-  try {
-    const res = await fetch('/api/auth/me', { credentials: 'include' })
-    const meData = await res.json()
-    if (meData.user) setUser(meData.user)
-  } catch { /* ignora */ }
-  qc.invalidateQueries()
-  toast.success('Perfil atualizado!')
-  onOpenChange(false)
-},
+    onSuccess: (data) => {
+      // Usa APENAS data.user do PATCH (não faz fetch redundante de /api/auth/me)
+      if (data.user) {
+        setUser(data.user)
+        // Invalida queries para re-buscar dados que dependem do user
+        qc.invalidateQueries({ queryKey: ['notificacoes'] })
+      }
+      toast.success('Perfil atualizado!')
+      onOpenChange(false)
+    },
+    onError: (e: Error) => toast.error(e.message),
   })
 
   const trocarSenha = useMutation({
@@ -77,11 +79,14 @@ onSuccess: async (data) => {
       const res = await fetch('/api/auth/senha', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ senhaAtual, novaSenha }),
       })
-      const d = await res.json()
-      if (!res.ok) throw new Error(d.error)
-      return d
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}))
+        throw new Error(d.error || 'Erro ao alterar senha')
+      }
+      return await res.json()
     },
     onSuccess: () => {
       toast.success('Senha alterada com sucesso!')
@@ -116,7 +121,6 @@ onSuccess: async (data) => {
 
           {/* === ABA DADOS === */}
           <TabsContent value="dados" className="space-y-4">
-            {/* Foto */}
             <div className="flex flex-col items-center gap-2">
               <div className="relative">
                 {fotoUrl ? (

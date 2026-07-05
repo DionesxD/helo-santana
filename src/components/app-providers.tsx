@@ -12,9 +12,11 @@ export function AppProviders({ children }: { children: ReactNode }) {
       new QueryClient({
         defaultOptions: {
           queries: {
-            staleTime: 30 * 1000,
+            staleTime: 0, // Sempre busca dados frescos
+            gcTime: 0, // Não mantém cache de queries inativas
             retry: 1,
             refetchOnWindowFocus: false,
+            refetchOnMount: true, // Re-busca quando o componente monta
           },
         },
       })

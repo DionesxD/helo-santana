@@ -38,7 +38,7 @@ export function ManicureProfileDialog({
     mutationFn: async (file: File) => {
       const fd = new FormData()
       fd.append('file', file)
-      const res = await fetch('/api/upload', { method: 'POST', body: fd })
+      const res = await fetch('/api/upload', { method: 'POST', body: fd, credentials: 'include' })
       const d = await res.json()
       if (!res.ok) throw new Error(d.error)
       return d.url as string
@@ -51,15 +51,20 @@ export function ManicureProfileDialog({
       const res = await fetch('/api/auth/perfil', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ nome, telefone, email, fotoUrl }),
       })
-      const d = await res.json()
-      if (!res.ok) throw new Error(d.error)
-      return d
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}))
+        throw new Error(d.error || 'Erro ao salvar')
+      }
+      return await res.json()
     },
     onSuccess: (data) => {
-      setUser(data.user)
-      qc.invalidateQueries()
+      if (data.user) {
+        setUser(data.user)
+        qc.invalidateQueries({ queryKey: ['notificacoes'] })
+      }
       toast.success('Perfil atualizado!')
       onOpenChange(false)
     },
@@ -72,23 +77,21 @@ export function ManicureProfileDialog({
       const res = await fetch('/api/auth/senha', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ senhaAtual, novaSenha }),
       })
-      const d = await res.json()
-      if (!res.ok) throw new Error(d.error)
-      return d
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}))
+        throw new Error(d.error || 'Erro ao alterar senha')
+      }
+      return await res.json()
     },
-onSuccess: async (data) => {
-  setUser(data.user)
-  try {
-    const res = await fetch('/api/auth/me', { credentials: 'include' })
-    const meData = await res.json()
-    if (meData.user) setUser(meData.user)
-  } catch { /* ignora */ }
-  qc.invalidateQueries()
-  toast.success('Perfil atualizado!')
-  onOpenChange(false)
-},
+    onSuccess: () => {
+      toast.success('Senha alterada com sucesso!')
+      setSenhaAtual(''); setNovaSenha(''); setConfirmar('')
+      onOpenChange(false)
+    },
+    onError: (e: Error) => toast.error(e.message),
   })
 
   async function handleFoto(e: React.ChangeEvent<HTMLInputElement>) {

@@ -22,5 +22,10 @@ export function AppShell() {
     return <AuthScreen />
   }
 
-  return user.tipo === 'manicure' ? <ManicureApp /> : <ClientApp />
+  // key força remount completo quando o usuário muda
+  const appKey = `${user.tipo}-${user.id}-${user._v}`
+
+  return user.tipo === 'manicure' 
+    ? <ManicureApp key={appKey} /> 
+    : <ClientApp key={appKey} />
 }

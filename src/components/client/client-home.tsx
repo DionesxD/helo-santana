@@ -43,16 +43,20 @@ export function ClientHome({
 
   const { data: agData, isLoading: agLoading } = useQuery({
     queryKey: ['agendamentos'],
+    enabled: !!user,
     queryFn: async () => {
       const res = await fetch('/api/agendamentos', { credentials: 'include' })
+      if (!res.ok) return []
       const j = await res.json()
       return (j.agendamentos ?? []) as Agendamento[]
     },
   })
   const { data: galeria } = useQuery({
     queryKey: ['galeria'],
+    enabled: !!user,
     queryFn: async () => {
       const res = await fetch('/api/galeria', { credentials: 'include' })
+      if (!res.ok) return []
       const j = await res.json()
       return (j.modelos ?? []) as Modelo[]
     },
@@ -145,7 +149,7 @@ export function ClientHome({
           </h2>
         </div>
         {galeria && galeria.length > 0 ? (
-          <div className="flex gap-3 overflow-x-auto no-scrollbar -mx-4 px-4 pb-1">
+          <div className="flex gap-3 overflow-x-auto scrollbar-thin -mx-4 px-4 pb-1">
             {galeria.map((m) => (
               <button
                 key={m.id}
